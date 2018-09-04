@@ -11,7 +11,13 @@ namespace GrepFuncProtoType
     {
         static void Main(string[] args)
         {
-            GrepFile.DirWalk(@".");
+            //var basePath = @".";
+            //var targetPath = @".";
+            //var fi = new System.IO.FileInfo(Path.Combine(basePath, targetPath));
+            //GrepFile.DirWalk(fi.FullName);
+
+            var fullPath = Path.GetFullPath(@".");
+            GrepFile.DirWalk(fullPath);
         }
     }
 }
