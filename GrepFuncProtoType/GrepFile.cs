@@ -11,12 +11,13 @@ namespace GrepFuncProtoType
     public class GrepFile
     {
         const string strReturn    = @"(?<return>\w+)";
-        const string strFunc      = @"(?<func>\w+)";
-        const string strParam     = @"(?<param>\w+)";
+        const string strFunc      = @"(?<func>[A-Za-z]\w*)";  // 先頭はアルファベット
+        const string strParam     = @"(?<param>[A-Za-z]\w*)"; // 先頭はアルファベット
         const string strLeftPar   = @"\(";
         const string strRightPar  = @"\)";
         const string strSemicolon = @";";
-        const string strSpace = @"\s*";
+        const string strSpaceOpt  = @"\s*";	// 0個以上の空白
+        const string strSpace     = @"\s+";	// 少なくとも一つ以上空白が必要
         static readonly string[] keywords = {
             "if",
             "for",
@@ -24,11 +25,12 @@ namespace GrepFuncProtoType
             "do",
             "switch",
             "return",
+            "goto",
         };
 
         static readonly string[] elements = new string[] {
             "^",
-            strReturn,
+            strReturn + strSpace,
             strFunc,
             strLeftPar,
             strParam,
@@ -38,7 +40,7 @@ namespace GrepFuncProtoType
             strRightPar,
             strSemicolon,
         };
-        static readonly string strString = string.Join(strSpace, elements);
+        static readonly string strString = string.Join(strSpaceOpt, elements);
         static Regex regPrototype = new Regex(strString);
 
         public static void Grep(string fileName)
@@ -68,6 +70,11 @@ namespace GrepFuncProtoType
                         }
                         if (Array.IndexOf(keywords, valParam) >= 0)
                         {
+                            continue;
+                        }
+                        if (valParam == "void")
+                        {
+                            // 関数の引数が void の場合は問題ない
                             continue;
                         }
                         Console.WriteLine(fileName + "(" + lineNumber.ToString() + ")" + ":" + match.Groups[0].Value);
