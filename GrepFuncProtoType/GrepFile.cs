@@ -17,7 +17,17 @@ namespace GrepFuncProtoType
         const string strRightPar  = @"\)";
         const string strSemicolon = @";";
         const string strSpace = @"\s*";
+        static readonly string[] keywords = {
+            "if",
+            "for",
+            "while",
+            "do",
+            "switch",
+            "return",
+        };
+
         static readonly string[] elements = new string[] {
+            "^",
             strReturn,
             strFunc,
             strLeftPar,
@@ -44,6 +54,22 @@ namespace GrepFuncProtoType
                     var match = regPrototype.Match(line);
                     if (match.Success)
                     {
+                        string valReturn = match.Groups["return"].Value;
+                        string valFunc   = match.Groups["func"].Value;
+                        string valParam  = match.Groups["param"].Value;
+
+                        if (Array.IndexOf(keywords, valReturn) >= 0)
+                        {
+                            continue;
+                        }
+                        if (Array.IndexOf(keywords, valFunc) >= 0)
+                        {
+                            continue;
+                        }
+                        if (Array.IndexOf(keywords, valParam) >= 0)
+                        {
+                            continue;
+                        }
                         Console.WriteLine(fileName + "(" + lineNumber.ToString() + ")" + ":" + match.Groups[0].Value);
                     }
                 }
@@ -57,7 +83,7 @@ namespace GrepFuncProtoType
                 foreach (string file in Directory.GetFiles(targetDir))
                 {
                     var ext = Path.GetExtension(file);
-                    if (ext == ".h" || ext == ".cpp")
+                    if (ext == ".h")
                     {
                         Grep(file);
                     }
