@@ -83,21 +83,33 @@ namespace GrepFuncProtoType
             }
         }
 
-        public static void DirWalk(string targetDir)
+        private static void ProcessFile(string fileName)
+        {
+            var ext = Path.GetExtension(fileName);
+            if (ext == ".h")
+            {
+                Grep(fileName);
+            }
+        }
+
+        public static void DirWalk(string targetPath)
         {
             try
             {
-                foreach (string file in Directory.GetFiles(targetDir))
+                if(File.Exists(targetPath))
                 {
-                    var ext = Path.GetExtension(file);
-                    if (ext == ".h")
-                    {
-                        Grep(file);
-                    }
+                    ProcessFile(targetPath);
                 }
-                foreach (string dir in Directory.GetDirectories(targetDir))
+                else if(Directory.Exists(targetPath))
                 {
-                    DirWalk(dir);
+                    foreach (string file in Directory.GetFiles(targetPath))
+                    {
+                        ProcessFile(file);
+                    }
+                    foreach (string dir in Directory.GetDirectories(targetPath))
+                    {
+                        DirWalk(dir);
+                    }
                 }
             }
             catch (System.Exception ex)
