@@ -9,20 +9,19 @@ namespace GrepFuncProtoType
 {
     class Program
     {
+        static readonly string[] defaultPaths = { @"." };
+
         static void Main(string[] args)
         {
-            if (args.Length == 0)
+            string[] files = defaultPaths;
+            if (args.Length > 0)
             {
-                var fullPath = Path.GetFullPath(@".");
-                GrepFile.DirWalk(fullPath);
+                files = args;
             }
-            else
+            foreach (string path in files)
             {
-                foreach (string path in args)
-                {
-                    var fullPath = Path.GetFullPath(path);
-                    GrepFile.DirWalk(fullPath);
-                }
+                var fullPath = Path.GetFullPath(path);
+                GrepFile.DirWalk(fullPath);
             }
         }
     }
