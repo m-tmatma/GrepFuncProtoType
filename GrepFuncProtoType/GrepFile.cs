@@ -15,7 +15,12 @@ namespace GrepFuncProtoType
     {
         const string strReturn    = @"(?<return>\w+)";
         const string strFunc      = @"(?<func>[A-Za-z]\w*)";  // 先頭はアルファベット
-        const string strParam     = @"(?<param>[A-Za-z]\w*)"; // 先頭はアルファベット
+        const string strType      = @"(?<type>[A-Za-z]\w*)";  // 先頭はアルファベット
+        const string strConst     = @"(const\s+)?";
+        const string strAnd       = @"&";
+        const string strPointer   = @"\*";
+        const string strAndOrPtr  = @"\s*(" + strAnd + @"|" + strPointer + @")*\s*";
+        const string strParam     = strConst + strType + strAndOrPtr;
         const string strLeftPar   = @"\(";
         const string strRightPar  = @"\)";
         const string strSemicolon = @";";
