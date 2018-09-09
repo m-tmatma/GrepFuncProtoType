@@ -8,6 +8,9 @@ using System.Text.RegularExpressions;
 
 namespace GrepFuncProtoType
 {
+    /// <summary>
+    /// プロトタイプ宣言で型名しかない箇所を Grep するクラス
+    /// </summary>
     public class GrepFile
     {
         const string strReturn    = @"(?<return>\w+)";
@@ -40,9 +43,21 @@ namespace GrepFuncProtoType
             strRightPar,
             strSemicolon,
         };
+
+        /// <summary>
+        /// rep() で使用する正規表現の文字列
+        /// </summary>
         static readonly string strString = string.Join(strSpaceOpt, elements);
+
+        /// <summary>
+        /// Grep() で使用する正規表現クラス
+        /// </summary>
         static Regex regPrototype = new Regex(strString);
 
+        /// <summary>
+        /// 指定したファイルからプロトタイプ宣言で型名しかない箇所を標準出力に出す。入力ファイルは UTF-8 と仮定する
+        /// </summary>
+        /// <param name="fileName">入力ファイル名</param>
         public static void Grep(string fileName)
         {
             using (var streamReader = new StreamReader(fileName, Encoding.GetEncoding("utf-8")))
@@ -83,6 +98,10 @@ namespace GrepFuncProtoType
             }
         }
 
+        /// <summary>
+        /// ヘッダファイルのみ grep の対象とするのでフィルタリングして grep を実施する
+        /// </summary>
+        /// <param name="fileName"></param>
         private static void ProcessFile(string fileName)
         {
             var ext = Path.GetExtension(fileName);
@@ -92,6 +111,11 @@ namespace GrepFuncProtoType
             }
         }
 
+        /// <summary>
+        /// フォルダを再帰的にたどってサブフォルダにあるヘッダファイルを grep する。
+        /// ファイルのパスを指定すれば指定したファイルのみ対象とする。
+        /// </summary>
+        /// <param name="targetPath">探す対象のフォルダまたはファイルパス</param>
         public static void DirWalk(string targetPath)
         {
             try
@@ -108,6 +132,8 @@ namespace GrepFuncProtoType
                     }
                     foreach (string dir in Directory.GetDirectories(targetPath))
                     {
+                        // 再帰呼び出し
+                        // サブフォルダから検索する。
                         DirWalk(dir);
                     }
                 }
